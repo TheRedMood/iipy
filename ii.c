@@ -1,6 +1,8 @@
 /* (C)opyright MMV-MMVI Anselm R. Garbe <garbeam at gmail dot com>
  * (C)opyright MMV-MMXI Nico Golde <nico at ngolde dot de>
  * See LICENSE file for license details. */
+#include "iipy.h"
+#include <Python.h>
 #include <errno.h>
 #include <netdb.h>
 #include <sys/types.h>
@@ -17,7 +19,6 @@
 #include <signal.h>
 #include <ctype.h>
 #include <time.h>
-#include <unistd.h>
 
 #ifndef PIPE_BUF /* FreeBSD don't know PIPE_BUF */
 #define PIPE_BUF 4096
@@ -416,8 +417,12 @@ static void run() {
 	struct timeval tv;
 	char ping_msg[512];
 
+    // Starting the python interpiter
+    Load_Python();
+
 	snprintf(ping_msg, sizeof(ping_msg), "PING %s\r\n", host);
 	for(;;) {
+
 		FD_ZERO(&rd);
 		maxfd = irc;
 		FD_SET(irc, &rd);
@@ -459,7 +464,7 @@ int main(int argc, char *argv[]) {
 	struct passwd *spw = getpwuid(getuid());
 	char *key = NULL, *fullname = NULL;
 	char prefix[_POSIX_PATH_MAX];
-
+    
 	if(!spw) {
 		fputs("ii: getpwuid() failed\n", stderr);
 		exit(EXIT_FAILURE);
@@ -489,6 +494,9 @@ int main(int argc, char *argv[]) {
 	add_channel(""); /* master channel */
 	login(key, fullname);
 	run();
-
+    
+    // You can never be too carefull :)
+    Py_Finalize();
 	return EXIT_SUCCESS;
 }
+
