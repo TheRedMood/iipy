@@ -4,7 +4,7 @@
 
 include config.mk
 
-SRC      = ii.c
+SRC      = ii.c iipy.c
 OBJ      = ${SRC:.c=.o}
 
 all: options ii
