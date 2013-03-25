@@ -417,8 +417,8 @@ static void run() {
 	struct timeval tv;
 	char ping_msg[512];
 
-    // Starting the python interpiter
-    Load_Python();
+    	// Starting the python interpreter
+   	 Load_Python();
 
 	snprintf(ping_msg, sizeof(ping_msg), "PING %s\r\n", host);
 	for(;;) {
