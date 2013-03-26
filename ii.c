@@ -200,19 +200,29 @@ static size_t tokenize(char **result, size_t reslen, char *str, char delim) {
 	return i;				/* number of tokens */
 }
 
+// This function has been modified so I can understand it better
 static void print_out(char *channel, char *buf) {
 	static char outfile[256], server[256], buft[18];
 	FILE *out = NULL;
 	time_t t = time(0);
 
-	if(channel) snprintf(server, sizeof(server), "-!- %s", channel);
-	if(strstr(buf, server)) channel="";
+	if(channel) 
+        snprintf(server, sizeof(server), "-!- %s", channel);
+	
+    if(strstr(buf, server)) 
+        channel="";
+
 	create_filepath(outfile, sizeof(outfile), channel, "out");
-	if(!(out = fopen(outfile, "a"))) return;
-	if(channel && channel[0]) add_channel(channel);
+
+	if(!(out = fopen(outfile, "a"))) 
+        return;
+
+	if(channel && channel[0]) 
+        add_channel(channel);
 
 	strftime(buft, sizeof(buft), "%F %R", localtime(&t));
 	fprintf(out, "%s %s\n", buft, buf);
+    iipy_SpokeEvent(channel, buf);
 	fclose(out);
 }
 

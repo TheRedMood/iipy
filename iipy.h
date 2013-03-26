@@ -9,5 +9,8 @@
 
 int Load_Python(void);
 int Load_PythonFunc(char* sModule, char* sFunc, PyObject *args);
+int iipy_LoadEvent(PyObject *info);
 
+/* Event functions */
+int iipy_SpokeEvent(char* channel, char* msg);
 #endif
