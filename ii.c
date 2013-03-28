@@ -226,6 +226,7 @@ static void print_out(char *channel, char *buf) {
 	fclose(out);
 }
 
+// Is this the one who writes ??
 static void proc_channels_privmsg(char *channel, char *buf) {
 	snprintf(message, PIPE_BUF, "<%s> %s", nick, buf);
 	print_out(channel, message);
@@ -426,8 +427,14 @@ static void run() {
 	fd_set rd;
 	struct timeval tv;
 	char ping_msg[512];
-
-    // Starting the python interpiter
+    
+    /* Starting the python interpeter */
+    Py_Initialize();
+    
+    /* Setting the environmental variables */
+    iipy_SetEnv(host, nick, path);
+    
+    /* Loading the python interface */
     Load_Python();
 
 	snprintf(ping_msg, sizeof(ping_msg), "PING %s\r\n", host);

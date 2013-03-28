@@ -3,7 +3,7 @@
 #include <Python.h>
 #include <signal.h>
 
-#define IIPY_EVENTLOADER "eventLoad"
+#define IIPY_EVENTLOADER "eventTriggered"
 #define IIPY_INIT "main"
 #define IIPY_MANAGER "iipy"
 
@@ -83,17 +83,76 @@ iipy_SpokeEvent(char* channel, char* msg)
 
     return -1;
 }
+
+/* Environment functions */
+
+/* TODO: Write doc on this. */
+int
+iipy_SetVar(char *name, void *value, char type) {
+    char *pycmd;
+    const int pylim = 350; 
+
+    /* What function do we need? */
+    switch(type) {
+        case 's':
+            snprintf(pycmd, pylim, "%s = '%s'\n", name, (char *)value);
+            break;
+        case 'i':
+            snprintf(pycmd, pylim, "%s = %d\n", name, (int)value);
+            break;
+        default:
+            return -1;
+            break;
+    }
+
+    PyRun_SimpleString(pycmd);
+    return 0;
+} 
+
+
+int
+iipy_SetHost(char *host)
+{
+    iipy_SetVar("iiHOST", (void *)host, 's');
+    return 0;
+}
+
+
+int
+iipy_SetNick(char nick[])
+{
+    iipy_SetVar("iiNICK", (void *)nick, 's');
+    return 0;
+}
+
+
+int
+iipy_SetPath(char path[])
+{
+    iipy_SetVar("iiPATH", (void *)path, 's');
+    return 0;
+}
+
+
+int
+iipy_SetEnv(char *host, char nick[], char path[])
+{
+    iipy_SetHost(host);
+    iipy_SetNick(nick);
+    iipy_SetPath(path);
+    
+    return 0;
+}
+
+
 /* This is the function that is responsible for starting up the python
- * interpreter.
- */
+ * interpreter. */
 int
 Load_Python(void)
 {
-    Py_Initialize();
-    
     /* Adding the plugin folder to the import path */
     PyRun_SimpleString("import sys\n" "sys.path.append('plugins/')\n");
-
+    
     /* Calling the manager. */
     int res = Load_PythonFunc(IIPY_MANAGER, IIPY_INIT, NULL);
     

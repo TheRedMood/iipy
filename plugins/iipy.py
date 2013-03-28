@@ -15,6 +15,8 @@ def load_plugin(name):
 
 def main():
     '''The main loader. It takes care of the setup rutines and such. '''
+    # Just testing.
+    print(iiHOST)
     # Start by loading the plugins
     for item in os.listdir("plugins/"):
         # Checking if the file is indeed a file suited for use
@@ -25,12 +27,12 @@ def main():
             load_plugin(item.split('.')[0])
 
 
-# The event functions.
-def eventAdd(event, name, function):
+# Function that adds event hooks
+def eventAddHook(event, name, function):
     EventHooks[event][name] = function
 
 
-def eventLoad(*args):
+def eventTriggered(*args):
     '''When an event is launched from C it is passed to this function. args is
        a tuple and the first element of it is always the name of the event. The
        rest of the elements depends on what even it is.'''
