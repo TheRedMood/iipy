@@ -1,9 +1,12 @@
 import os
+from os import path
+
+# Embeded functions
+import iipyemb
 
 # Defining global variables
 loaded_plugins = []
 EventHooks = {"spoke": {}, "msg": {}}
-
 
 def load_plugin(name):
     ''' The plugin loader. It sorts out the loading of the object and so on.'''
@@ -15,8 +18,6 @@ def load_plugin(name):
 
 def main():
     '''The main loader. It takes care of the setup rutines and such. '''
-    # Just testing.
-    print(iiHOST)
     # Start by loading the plugins
     for item in os.listdir("plugins/"):
         # Checking if the file is indeed a file suited for use
@@ -40,7 +41,6 @@ def eventTriggered(*args):
     if not EventHooks.__contains__(args[0]):
         return 0;
 
-
     for _, hfunc in EventHooks[args[0]].items():
         # Checking to see if there are any events here
         if len(args) >= 1:
@@ -48,3 +48,20 @@ def eventTriggered(*args):
         else:
             hfunc()
 
+
+# Finding the directory that a channel have.
+def iipy_ChannelDir(channel):
+    if channel == "":
+        return iipyemb.getPath()
+    return path.join(iipyemb.getPath(), channel)
+
+
+# Send message to in file :)
+def Message(channel, message):
+    infile = path.join(iipy_ChannelDir(channel), "in")
+    if not path.exists(infile):
+        return -1
+
+    with open(infile, "w", encoding="utf-8") as file:
+        file.write(message + "\n")
+    return 0

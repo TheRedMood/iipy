@@ -2,10 +2,15 @@
  * Licensed under the 2-clause BSD license, see LICENSE. */
 #include <Python.h>
 #include <signal.h>
+#include <string.h>
 
 #define IIPY_EVENTLOADER "eventTriggered"
 #define IIPY_INIT "main"
 #define IIPY_MANAGER "iipy"
+
+char* iiHOST;
+char* iiPATH;
+char* iiNICK;
 
 int
 Load_PythonFunc(char* sModule, char* sFunc, PyObject *pArgs)
@@ -55,6 +60,8 @@ Load_PythonFunc(char* sModule, char* sFunc, PyObject *pArgs)
     return 0;
 }
 
+/* EVENTS! */
+
 /* Abstraction layer for sending events *
  * This expects the info variable to be a tuple */
 int
@@ -69,12 +76,33 @@ iipy_LoadEvent(PyObject *info)
 
 /* Fires of the Spoke event and returns -1 on error */
 int
-iipy_SpokeEvent(char* channel, char* msg)
+iipy_SpokeEvent(char* channel, char* date, char* msg)
 {
     PyObject *eventdata;
     
+    /* Splitting this up into tokens. */
+    char *nick = strdup("");
+    char *message = strdup(msg);
+    
+    char *token = strsep(&msg, "<");
+    token = strsep(&msg, ">");
+
+    if(msg != NULL) {
+        nick = strdup(token);
+        message = strdup(msg);
+    }
+
+    // We want a nice string :)
+    if(message[0] == ' ') //message++;
+        memmove(message, message+1, strlen(message)); 
+
     // We need to build the tuple that we are sending off to the event loader
-    eventdata = Py_BuildValue("s s s", "spoke", channel, msg);
+    eventdata = Py_BuildValue("s s s s s", "spoke", channel, date, nick, message);
+
+    /* Freeing the strings */
+    free(nick);
+    free(message);
+
     if(eventdata) {
         int res = iipy_LoadEvent(eventdata);
         Py_DECREF(eventdata);
@@ -84,72 +112,69 @@ iipy_SpokeEvent(char* channel, char* msg)
     return -1;
 }
 
-/* Environment functions */
-
-/* TODO: Write doc on this. */
-int
-iipy_SetVar(char *name, void *value, char type) {
-    char *pycmd;
-    const int pylim = 350; 
-
-    /* What function do we need? */
-    switch(type) {
-        case 's':
-            snprintf(pycmd, pylim, "%s = '%s'\n", name, (char *)value);
-            break;
-        case 'i':
-            snprintf(pycmd, pylim, "%s = %d\n", name, (int)value);
-            break;
-        default:
-            return -1;
-            break;
-    }
-
-    PyRun_SimpleString(pycmd);
-    return 0;
-} 
-
-
-int
-iipy_SetHost(char *host)
-{
-    iipy_SetVar("iiHOST", (void *)host, 's');
-    return 0;
-}
-
-
-int
-iipy_SetNick(char nick[])
-{
-    iipy_SetVar("iiNICK", (void *)nick, 's');
-    return 0;
-}
-
-
-int
-iipy_SetPath(char path[])
-{
-    iipy_SetVar("iiPATH", (void *)path, 's');
-    return 0;
-}
-
-
+/* Helper functions */
 int
 iipy_SetEnv(char *host, char nick[], char path[])
 {
-    iipy_SetHost(host);
-    iipy_SetNick(nick);
-    iipy_SetPath(path);
-    
+    iiHOST = host;
+    iiPATH = path;
+    iiNICK = nick;
     return 0;
 }
 
+// Python functions :)
+static PyObject *
+iipy_getHost(PyObject *self, PyObject *args)
+{
+    return PyUnicode_FromString(iiHOST);
+}
+
+
+static PyObject *
+iipy_getPath(PyObject *self, PyObject *args)
+{
+    return PyUnicode_FromString(iiPATH);
+}
+
+static PyObject *
+iipy_getNick(PyObject *self, PyObject *args)
+{
+    return PyUnicode_FromString(iiNICK);
+}
+
+static PyMethodDef IipyMethods[] = {
+    {"getHost", iipy_getHost, METH_VARARGS, "Return the irc host address."},
+    {"getPath", iipy_getPath, METH_VARARGS, "Return the ii local path."},
+    {"getNick", iipy_getNick, METH_VARARGS, "Return the irc nick."},
+    {NULL, NULL, 0, NULL}
+};
+
+static PyModuleDef IipyModule = {
+    PyModuleDef_HEAD_INIT, "iipyemb", NULL, -1, IipyMethods,
+    NULL, NULL, NULL, NULL
+};
+
+static PyObject *
+PyInit_iipy(void)
+{
+    return PyModule_Create(&IipyModule);
+}
 
 /* This is the function that is responsible for starting up the python
  * interpreter. */
 int
-Load_Python(void)
+Load_Python(char* host, char nick[], char path[])
 {
+
+    /* Loading the embeded python functions */
+    PyImport_AppendInittab("iipyemb", &PyInit_iipy);
+
+    /* Starting the python interpeter */
+    Py_Initialize();
+
+    /* Set the enviroment */
+    iipy_SetEnv(host, nick, path);
+
     /* Adding the plugin folder to the import path */
     PyRun_SimpleString("import sys\n" "sys.path.append('plugins/')\n");
     
@@ -158,4 +183,3 @@ Load_Python(void)
     
     return res;
 }
-

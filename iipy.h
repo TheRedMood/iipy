@@ -8,22 +8,15 @@
 #define IIPY_H_INCLUDED
 
 /* General functions */
-int Load_Python(void);
+int Load_Python(char *host, char nick[], char path[]);
 int Load_PythonFunc(char* sModule, char* sFunc, PyObject *args);
 int iipy_LoadEvent(PyObject *info);
-
-/* Environment functions */
-int iipy_SetVar(char *name, void *value, char type);
-
-// Specific variables
-int iipy_SetHost(char *host);
-int iipy_SetNick(char nick[]);
-int iipy_SetPath(char path[]);
 
 /* All in one Environment function */
 int iipy_SetEnv(char *host, char nick[], char path[]);
 
 /* Event functions */
-int iipy_SpokeEvent(char *channel, char *msg);
+int iipy_SpokeEvent(char *channel, char *time, char *msg);
+
 
 #endif

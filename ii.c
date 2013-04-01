@@ -222,7 +222,7 @@ static void print_out(char *channel, char *buf) {
 
 	strftime(buft, sizeof(buft), "%F %R", localtime(&t));
 	fprintf(out, "%s %s\n", buft, buf);
-    iipy_SpokeEvent(channel, buf);
+    iipy_SpokeEvent(channel, buft, buf);
 	fclose(out);
 }
 
@@ -428,15 +428,9 @@ static void run() {
 	struct timeval tv;
 	char ping_msg[512];
     
-    /* Starting the python interpeter */
-    Py_Initialize();
-    
-    /* Setting the environmental variables */
-    iipy_SetEnv(host, nick, path);
-    
     /* Loading the python interface */
-    Load_Python();
-
+    Load_Python(host, nick, path);
+    
 	snprintf(ping_msg, sizeof(ping_msg), "PING %s\r\n", host);
 	for(;;) {
 
