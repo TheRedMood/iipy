@@ -1,0 +1,18 @@
+recive event:
+    Desc: Triggered everytime something is recived. Be it messages or
+    some one speaking in a channel.
+
+    Params: channel, date, nick, message
+
+spoke event:
+    Desc: Built on the receive event. Only triggered when something is said
+    in a channel or in the server window.
+
+    Params: channel, date, nick, message
+
+msg event:
+    Desc: Triggered every time someone sends a private message to you. Built
+    on the receive event.
+
+    Params: date, nick, message
+

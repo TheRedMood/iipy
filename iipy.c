@@ -74,9 +74,9 @@ iipy_LoadEvent(PyObject *info)
     return res;
 }
 
-/* Fires of the Spoke event and returns -1 on error */
+/* Fires of the receive event and returns -1 on error */
 int
-iipy_SpokeEvent(char* channel, char* date, char* msg)
+iipy_ReceiveEvent(char* channel, char* date, char* msg)
 {
     PyObject *eventdata;
     
@@ -97,7 +97,7 @@ iipy_SpokeEvent(char* channel, char* date, char* msg)
         memmove(message, message+1, strlen(message)); 
 
     // We need to build the tuple that we are sending off to the event loader
-    eventdata = Py_BuildValue("s s s s s", "spoke", channel, date, nick, message);
+    eventdata = Py_BuildValue("s s s s s", "receive", channel, date, nick, message);
 
     /* Freeing the strings */
     free(nick);

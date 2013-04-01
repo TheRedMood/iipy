@@ -222,7 +222,7 @@ static void print_out(char *channel, char *buf) {
 
 	strftime(buft, sizeof(buft), "%F %R", localtime(&t));
 	fprintf(out, "%s %s\n", buft, buf);
-    iipy_SpokeEvent(channel, buft, buf);
+    iipy_ReceiveEvent(channel, buft, buf);
 	fclose(out);
 }
 
