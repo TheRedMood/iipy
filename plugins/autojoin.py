@@ -1,4 +1,5 @@
 import iipy
 
 def main():
-    iipy.Message("", "/j #witchlinux")
+    iipy.joinChannel("#crunchbang-offtopic")
+    iipy.joinChannel("#witchlinux")
