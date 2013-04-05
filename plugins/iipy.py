@@ -12,8 +12,8 @@ cmdList = {}
 cmdpre = "@"
 
 # Objects
-class eventData(object):
-    
+class receiveData(object):
+    '''The data object for the receive events '''
     def __init__(self, channel, date, nick, message): 
         self.channel = channel
         self.date = date
@@ -42,7 +42,6 @@ def reloadPlugin():
     for plugin in loaded_plugins:
         imp.reload(plugin)
         plugin.main()
-
 
 # function that add events hooks
 def eventAddHook(event, name, function):
@@ -78,10 +77,10 @@ def eventTriggered(*args):
 
 
 # From iipy to functions
-def eventTrigger(data):
+def eventBroadcaster(data):
     # Looping trough the elements
-    for hfunc in EventHooks[data.type].values():
-        hfunc(data)
+    for function in EventHooks[data.type].values():
+        function(data)
 
 
 # Finding the directory that a channel have.
@@ -119,15 +118,16 @@ def handleCommand(data):
 # Defining the msg and spoke events.  # This is the only place you can get commands from.
 def iipy_ReceiveEvents(channel, date, nick, message):
     # Channel may be of type None
-    if not channel:
-        channel = ""
+    if not channel: channel = ""
     
     # Create the event.
-    data = eventData(channel, date, nick, message)
+    data = receiveData(channel, date, nick, message)
 
-    # Handle commands
+    # Check for commands 
     handleCommand(data)
-    eventTrigger(data)
+
+    # Handle the event.
+    eventBroadcaster(data)
 
 
 # Convinient functions
