@@ -23,6 +23,6 @@ LIBS        = -L${LIBDIR} -L/usr/lib -lc
 
 # compiler
 CC          = cc
-CFLAGS      = -g -O0 -W -Wall ${INCLUDES} -DVERSION=\"${VERSION}\" `python-config --cflags`
-LDFLAGS     = ${LIBS} `python-config --ldflags`
+CFLAGS      = -g -O0 -W -Wall ${INCLUDES} -DVERSION=\"${VERSION}\" `python3.2-config --cflags`
+LDFLAGS     = ${LIBS} `python3.2-config --ldflags`
 

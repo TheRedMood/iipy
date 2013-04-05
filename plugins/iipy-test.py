@@ -17,7 +17,7 @@ def testlol(channel, date, nick, message):
 def helpcmd(channel, date, nick, message, flags=()):
     if flags == () or not flags[0].lower() in helpdb:
         iipy.Message(channel, "You asked for help?")
-    
+        return
     iipy.Message(channel, "{0}".format(helpdb[flags[0].lower()]))
 
 def reloadcmd(channel, date, nick, message, flags=()):
@@ -32,6 +32,6 @@ def main():
     setHelpdb()
     iipy.eventAddHook("spoke", "testlol", testlol)
     iipy.eventAddHook("msg", "donottalk", donottalk)
-    
+
     iipy.addCommand("help", helpcmd)
     iipy.addCommand("reload", reloadcmd)

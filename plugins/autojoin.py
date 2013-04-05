@@ -1,5 +1,5 @@
 import iipy
 
 def main():
-    iipy.joinChannel("#crunchbang-offtopic")
+    iipy.joinChannel("#itestbot")
     iipy.joinChannel("#witchlinux")
