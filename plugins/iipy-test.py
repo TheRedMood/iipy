@@ -11,22 +11,21 @@ def setHelpdb():
     # Make sure that this is the last item
     helpdb["topics"] = list(helpdb.keys()) + ['topics']
 
-def testlol(channel, date, nick, message):
-    print("Channel: {0}, Date: {1}, Nick: {2}, Message: {3}".format(channel, date, nick, message))
+def testlol(data):
+    print("Channel: {0}, Date: {1}, Nick: {2}, Message: {3}".format(data.channel, data.date, data.nick, data.message))
 
-def helpcmd(channel, date, nick, message, flags=()):
-    if flags == () or not flags[0].lower() in helpdb:
-        iipy.Message(channel, "You asked for help?")
-        return
-    iipy.Message(channel, "{0}".format(helpdb[flags[0].lower()]))
+def helpcmd(ii):
+    if not ii.flags or not (ii.flags[0].lower() in helpdb):
+        ii.say("{0}".format(helpdb["topics"]))
+    else:
+        ii.say("{0}".format(helpdb[ii.flags[0].lower()]))
 
-def reloadcmd(channel, date, nick, message, flags=()):
+def reloadcmd(data):
     iipy.reloadPlugin()
-    iipy.Message(channel, "Plugins reloaded.")
+    data.say("Plugins reloaded.")
 
-def donottalk(date, nick, message):
-    iipy.Message(nick, "Your nick is: {0} and you talked to me.".format(nick))
-
+def donottalk(data):
+    data.say("Your nick is: {0} and you talked to me.".format(data.nick))
 
 def main():
     setHelpdb()
