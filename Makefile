@@ -4,19 +4,19 @@
 
 include config.mk
 
-SRC      = ii.c iipy.c
-OBJ      = ${SRC:.c=.o}
+SRC	  = ii.c iipy.c
+OBJ	  = ${SRC:.c=.o}
 
 all: options ii
 	@echo built ii
 
 options:
 	@echo ii build options:
-	@echo "LIBS     = ${LIBS}"
+	@echo "LIBS	 = ${LIBS}"
 	@echo "INCLUDES = ${INCLUDES}"
 	@echo "CFLAGS   = ${CFLAGS}"
 	@echo "LDFLAGS  = ${LDFLAGS}"
-	@echo "CC       = ${CC}"
+	@echo "CC	   = ${CC}"
 
 .c.o:
 	@echo CC $<
@@ -52,4 +52,5 @@ uninstall: all
 	@echo "uninstalled ii"
 
 clean:
+
 	rm -f ii *~ *.o *core *.tar.gz

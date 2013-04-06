@@ -44,10 +44,10 @@ static char message[PIPE_BUF]; /* message buf used for communication */
 
 static void usage() {
 	fputs("ii - irc it - " VERSION "\n"
-	      "(C)opyright MMV-MMVI Anselm R. Garbe\n"
-	      "(C)opyright MMV-MMXI Nico Golde\n"
-	      "usage: ii [-i <irc dir>] [-s <host>] [-p <port>]\n"
-	      "          [-n <nick>] [-k <password>] [-f <fullname>]\n", stderr);
+		  "(C)opyright MMV-MMVI Anselm R. Garbe\n"
+		  "(C)opyright MMV-MMXI Nico Golde\n"
+		  "usage: ii [-i <irc dir>] [-s <host>] [-p <port>]\n"
+		  "		  [-n <nick>] [-k <password>] [-f <fullname>]\n", stderr);
 	exit(EXIT_FAILURE);
 }
 
@@ -206,23 +206,23 @@ static void print_out(char *channel, char *buf) {
 	FILE *out = NULL;
 	time_t t = time(0);
 
-	if(channel) 
-        snprintf(server, sizeof(server), "-!- %s", channel);
-	
-    if(strstr(buf, server)) 
-        channel="";
+	if(channel)
+		snprintf(server, sizeof(server), "-!- %s", channel);
+
+	if(strstr(buf, server))
+		channel="";
 
 	create_filepath(outfile, sizeof(outfile), channel, "out");
 
-	if(!(out = fopen(outfile, "a"))) 
-        return;
+	if(!(out = fopen(outfile, "a")))
+		return;
 
-	if(channel && channel[0]) 
-        add_channel(channel);
+	if(channel && channel[0])
+		add_channel(channel);
 
 	strftime(buft, sizeof(buft), "%F %R", localtime(&t));
 	fprintf(out, "%s %s\n", buft, buf);
-    iipy_ReceiveEvent(channel, buft, buf);
+	iipy_ReceiveEvent(channel, buft, buf);
 	fclose(out);
 }
 
@@ -315,12 +315,12 @@ static void proc_server_cmd(char *buf) {
 	/* <message>  ::= [':' <prefix> <SPACE> ] <command> <params> <crlf>
 	   <prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
 	   <command>  ::= <letter> { <letter> } | <number> <number> <number>
-	   <SPACE>    ::= ' ' { ' ' }
+	   <SPACE>	::= ' ' { ' ' }
 	   <params>   ::= <SPACE> [ ':' <trailing> | <middle> <params> ]
 	   <middle>   ::= <Any *non-empty* sequence of octets not including SPACE
 	   or NUL or CR or LF, the first of which may not be ':'>
 	   <trailing> ::= <Any, possibly *empty*, sequence of octets not including NUL or CR or LF>
-	   <crlf>     ::= CR LF */
+	   <crlf>	 ::= CR LF */
 
 	if(buf[0] == ':') {		/* check prefix */
 		if (!(p = strchr(buf, ' '))) return;
@@ -427,10 +427,10 @@ static void run() {
 	fd_set rd;
 	struct timeval tv;
 	char ping_msg[512];
-    
-    /* Loading the python interface */
-    Load_Python(host, nick, path);
-    
+
+	/* Loading the python interface */
+	Load_Python(host, nick, path);
+
 	snprintf(ping_msg, sizeof(ping_msg), "PING %s\r\n", host);
 	for(;;) {
 
@@ -475,7 +475,7 @@ int main(int argc, char *argv[]) {
 	struct passwd *spw = getpwuid(getuid());
 	char *key = NULL, *fullname = NULL;
 	char prefix[_POSIX_PATH_MAX];
-    
+
 	if(!spw) {
 		fputs("ii: getpwuid() failed\n", stderr);
 		exit(EXIT_FAILURE);
@@ -505,9 +505,8 @@ int main(int argc, char *argv[]) {
 	add_channel(""); /* master channel */
 	login(key, fullname);
 	run();
-    
-    // You can never be too carefull :)
-    Py_Finalize();
+
+	// You can never be too carefull :)
+	Py_Finalize();
 	return EXIT_SUCCESS;
 }
-

@@ -10,11 +10,16 @@ loaded_plugins = []
 EventHooks = {"receive": {}, "spoke": {}, "msg": {}}
 cmdList = {}
 cmdpre = "@"
+channelList = []
+
+# Config variables
+owner = "TheRedMood"
+
 
 # Objects
 class receiveData(object):
     '''The data object for the receive events '''
-    def __init__(self, channel, date, nick, message): 
+    def __init__(self, channel, date, nick, message):
         self.channel = channel
         self.date = date
         self.nick = nick
@@ -27,7 +32,8 @@ class receiveData(object):
         else:
             self.type = "spoke"
             self.say = lambda s: Message(self.channel, s)
-    
+
+
 def load_plugin(name):
     ''' The plugin loader. It sorts out the loading of the object and so on.'''
     moduleobj = __import__(name)
@@ -43,6 +49,7 @@ def reloadPlugin():
         imp.reload(plugin)
         plugin.main()
 
+
 # function that add events hooks
 def eventAddHook(event, name, function):
     EventHooks[event][name] = function
@@ -55,7 +62,10 @@ def main():
 
     for item in os.listdir("plugins/"):
         # Checking if the file is indeed a file suited for use
-        if item not in ['__pycache__', 'iipy.py', '__init__.py'] and item.split('.')[-1] == 'py':
+        if item in ['__pycache__', 'iipy.py', '__init__.py']:
+            continue
+
+        if item.split('.')[-1] == 'py':
             # The first part of your name should be the module name.
             # This would turn "testing.py" into ["testing", "py"] and then do
             # [0] on that.
@@ -70,7 +80,7 @@ def eventTriggered(*args):
     # Loop trough the EventHooks if the event is there
     if not args[0] in EventHooks:
         return -1
-   
+
     if len(args) >= 1:
         if args[0] == "receive":
             iipy_ReceiveEvents(*args[1:])
@@ -106,6 +116,7 @@ def addCommand(cmd, func):
     cmdList[cmd] = func
 
 
+# Handling of commands.... Still very messy.
 def handleCommand(data):
     # Checking commands
     if data.message[0] == cmdpre:
@@ -114,16 +125,22 @@ def handleCommand(data):
             data.flags = data.message[1:].split(" ")
             cmdList[data.flags.pop(0)](data)
 
+    elif data.type == "msg":
+        if data.message.split(" ")[0] in cmdList:
+            data.flags = data.message.split(" ")
+            cmdList[data.flags.pop(0)](data)
 
-# Defining the msg and spoke events.  # This is the only place you can get commands from.
+
+# This is the only place you can get commands from.
 def iipy_ReceiveEvents(channel, date, nick, message):
     # Channel may be of type None
-    if not channel: channel = ""
-    
+    if not channel:
+        channel = ""
+
     # Create the event.
     data = receiveData(channel, date, nick, message)
 
-    # Check for commands 
+    # Check for commands
     handleCommand(data)
 
     # Handle the event.
@@ -132,11 +149,24 @@ def iipy_ReceiveEvents(channel, date, nick, message):
 
 # Convinient functions
 def joinChannel(channel):
-    Message("", "/j {0}".format(channel))
+    if not channel in channelList:
+        Message("", "/j {0}".format(channel))
+        channelList.append(channel)
 
 
+# Use these two channels to
+def leaveChannel(channel):
+    if channel in channelList:
+        Message("", "/l {0}".format(channel))
+        channelList.remove(channel)
+
+
+# Message user
 def msgUser(user, message):
     if Message(user, message) == -1:
         joinChannel(user)
         Message(user, message)
 
+
+def do(channel, action):
+    Message(channel, "\x01ACTION {0}\x01".format(action))

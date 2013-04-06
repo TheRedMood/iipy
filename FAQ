@@ -33,4 +33,5 @@ What other fancy stuff can I do with ii?
 It is very easy to write irc bots in ii:
 tail -f \#/out | while read foo; do name=echo $foo | awk '{print $2}' | sed 's,<\\(.*\\)>,\\1,'; if 0 -eq expr $RANDOM % 10 then echo "$name: WHAT??" ; fi; done
 This will just spam a channel but think about using nagios2irc or you can
+
 use ii to generate channel stats. Your imagination should be boundless.

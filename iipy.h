@@ -18,4 +18,5 @@ int iipy_SetEnv(char *host, char nick[], char path[]);
 /* Event functions */
 int iipy_ReceiveEvent(char *channel, char *time, char *msg);
 
+
 #endif

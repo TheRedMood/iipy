@@ -21,7 +21,7 @@ Edit config.mk to match your local setup. ii is installed into
 Afterwards enter the following command to build and install ii (if
 necessary as root):
 
-    $ make clean install
+	$ make clean install
 
 Running ii
 ------------
@@ -55,5 +55,6 @@ Contact
 -------
 If you want to contact the developers just write a mail to
 ii (at) modprobe (dot) de
+
 
 -- Nico Golde, Anselm R. Garbe
