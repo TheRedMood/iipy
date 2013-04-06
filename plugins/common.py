@@ -13,6 +13,9 @@ def reloadcmd(ii):
     iipy.reloadPlugin()
     ii.say("Plugins reloaded.")
 
+# Abstraction layer for simple responses
+def res(msg):
+    return lambda x: x.say(msg)
 
 def main():
     # Reload
