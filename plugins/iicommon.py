@@ -11,8 +11,8 @@ import iihelp
 
 # Reload function
 def reloadcmd(ii):
-    if ii.nick == iipy.owner:
-        iipy.reloadPlugin()
+    if ii.nick == iipy.OWNER:
+        iipy.reload_plugins()
         ii.say("Plugins reloaded.")
     else:
         ii.say("You don't got the permission to do that.")
@@ -20,23 +20,23 @@ def reloadcmd(ii):
 
 # Command to join a channel
 def joincmd(ii):
-    if ii.nick == iipy.owner and ii.flags:
-        iipy.joinChannel(ii.flags[0])
+    if ii.nick == iipy.OWNER and ii.flags:
+        iipy.join_channel(ii.flags[0])
     else:
         ii.say("You don't got the permission to do that.")
 
 
 # Command to leave a channel
 def partcmd(ii):
-    if ii.nick == iipy.owner and ii.flags:
-        iipy.leaveChannel(ii.flags[0])
+    if ii.nick == iipy.OWNER and ii.flags:
+        iipy.leave_channel(ii.flags[0])
     else:
         ii.say("You don't got the permission to do that.")
 
 
 # List channels.
 def listchannels(ii):
-    ii.say(str(iipy.channelList))
+    ii.say(str(iipy.channel_list))
 
 
 # Abstraction layer for simple responses
@@ -46,21 +46,21 @@ def res(msg):
 
 def main():
     # Reload
-    iipy.addCommand("reload", reloadcmd)
-    iihelp.addHelp("reload", "Reload the plugins.")
+    iipy.add_command("reload", reloadcmd)
+    iihelp.add_help("reload", "Reload the plugins.")
 
     # join
-    iipy.addCommand("join", joincmd)
-    iihelp.addHelp("join", "Have the bot join channels.")
+    iipy.add_command("join", joincmd)
+    iihelp.add_help("join", "Have the bot join channels.")
 
     # part
-    iipy.addCommand("part", partcmd)
-    iihelp.addHelp("part", "Leave a channel specified by the first argument.")
+    iipy.add_command("part", partcmd)
+    iihelp.add_help("part", "Leave a channel specified by the first argument.")
 
     # list channels
-    iipy.addCommand("list", listchannels)
-    iihelp.addHelp("list", "List the current active channels")
+    iipy.add_command("list", listchannels)
+    iihelp.add_help("list", "List the current active channels")
 
     # Ping
-    iipy.addCommand("ping", lambda x: x.say("{0}: Pong.".format(x.nick)))
-    iihelp.addHelp("ping", "Simple delay test.")
+    iipy.add_command("ping", lambda x: x.say("{0}: Pong.".format(x.nick)))
+    iihelp.add_help("ping", "Simple delay test.")

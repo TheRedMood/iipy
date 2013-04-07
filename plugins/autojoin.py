@@ -2,5 +2,5 @@ import iipy
 
 
 def main():
-    iipy.joinChannel("#iipy")
-    iipy.joinChannel("#witchlinux")
+    iipy.join_channel("#iipy")
+    iipy.join_channel("#witchlinux")

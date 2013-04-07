@@ -7,7 +7,7 @@ import iipy
 import iicommon
 
 
-def setHelpdb():
+def set_helpdb():
     global helpdb
     helpdb = {}
 
@@ -15,7 +15,7 @@ def setHelpdb():
     helpdb["version"] = "Print the iipy version."
 
 
-def addHelp(name, desc):
+def add_help(name, desc):
     global helpdb
     helpdb[name] = desc
 
@@ -36,9 +36,9 @@ def helpfuncs(topic):
 
 
 def main():
-    setHelpdb()
-    iipy.addCommand("info",  iicommon.res("This is a plugin written for the "
+    set_helpdb()
+    iipy.add_command("info",  iicommon.res("This is a plugin written for the "
                                           "iipy program."))
-    iipy.addCommand("version", iicommon.res("0.01"))
+    iipy.add_command("version", iicommon.res("0.01"))
 
-    iipy.addCommand("help", helpcmd)
+    iipy.add_command("help", helpcmd)
